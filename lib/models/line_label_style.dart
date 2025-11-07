@@ -10,7 +10,8 @@ class LineLabelStyle {
   final EdgeInsets padding;
   final double offsetX;
   final double offsetY;
-  final bool useLineColor;
+  final bool useLineColorForText;
+  final double containerAlpha;
 
   const LineLabelStyle({
     this.enabled = true,
@@ -22,7 +23,8 @@ class LineLabelStyle {
     this.padding = const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
     this.offsetX = 0.0,
     this.offsetY = -12.0,
-    this.useLineColor = true,
+    this.useLineColorForText = true,
+    this.containerAlpha = 0.1,
   });
 
   @override
@@ -39,7 +41,8 @@ class LineLabelStyle {
           padding == other.padding &&
           offsetX == other.offsetX &&
           offsetY == other.offsetY &&
-          useLineColor == other.useLineColor;
+          useLineColorForText == other.useLineColorForText &&
+          containerAlpha == other.containerAlpha;
 
   @override
   int get hashCode =>
@@ -52,5 +55,6 @@ class LineLabelStyle {
       padding.hashCode ^
       offsetX.hashCode ^
       offsetY.hashCode ^
-      useLineColor.hashCode;
+      useLineColorForText.hashCode ^
+      containerAlpha.hashCode;
 }

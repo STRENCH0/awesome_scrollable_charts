@@ -92,10 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     dashGap: 4.0,
                   ),
                   xAxisStyle: XAxisStyle(
-                    enabled: true,
-                    color: Colors.grey.shade600,
-                    width: 1.5,
-                    isDashed: false,
+                    enabled: false,
                   ),
                   xAxisLabelStyle: XAxisLabelStyle(
                     enabled: true,
@@ -110,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text('Линейный график', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               SizedBox(
-                height: 600,
+                height: 350,
                 width: double.infinity,
                 child: LineChart(
                   data: getSampleLineChartData(),
@@ -135,7 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   missingDataBehavior: MissingDataBehavior.previousValue,
                   lineLabelStyle: LineLabelStyle(
                     enabled: true,
-                    useLineColor: true,
+                    useLineColorForText: false,
+                    containerAlpha: 0.7,
                     cornerRadius: 6.0,
                     offsetY: -16,
                   ),
@@ -147,10 +145,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     dashGap: 4.0,
                   ),
                   xAxisStyle: XAxisStyle(
-                    enabled: true,
-                    color: Colors.grey.shade600,
-                    width: 1.5,
-                    isDashed: false,
+                    enabled: false,
+                  ),
+                  zeroLineStyle: ZeroLineStyle(
+                    isDashed: true,
+                    dashLength: 8.0,
+                    dashGap: 4.0,
                   ),
                   xAxisLabelStyle: XAxisLabelStyle(
                     enabled: true,
