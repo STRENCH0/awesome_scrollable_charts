@@ -54,3 +54,40 @@ class StackedAreaChartData {
     required this.areas,
   });
 }
+
+/// Data model for a single line point in the line chart
+class LineDataPoint {
+  final int labelIndex;
+  final double value;
+
+  LineDataPoint({
+    required this.labelIndex,
+    required this.value,
+  });
+}
+
+/// Data model for a line in the line chart
+class LineData {
+  final String label;
+  final Color color;
+  final List<LineDataPoint> points;
+  final double strokeWidth;
+
+  LineData({
+    required this.label,
+    required this.color,
+    required this.points,
+    this.strokeWidth = 2.0,
+  });
+}
+
+/// Input data model for the line chart widget
+class LineChartData {
+  final List<ChartLabel> labels;
+  final List<LineData> lines;
+
+  LineChartData({
+    required this.labels,
+    required this.lines,
+  });
+}
