@@ -38,7 +38,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  scrollable_charts: ^0.1.0
+  awesome_scrollable_charts: ^0.1.0
 ```
 
 Then run:
@@ -53,7 +53,7 @@ flutter pub get
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:scrollable_charts/scrollable_charts.dart';
+import 'package:awesome_scrollable_charts/awesome_scrollable_charts.dart';
 
 class MyLineChart extends StatelessWidget {
   @override
@@ -102,7 +102,7 @@ class MyLineChart extends StatelessWidget {
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:scrollable_charts/scrollable_charts.dart';
+import 'package:awesome_scrollable_charts/awesome_scrollable_charts.dart';
 
 class MyStackedAreaChart extends StatelessWidget {
   @override
@@ -323,4 +323,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-If you find this package useful, please consider giving it a ⭐ on [GitHub](https://github.com/strench0/scrollable_charts)!
+If you find this package useful, please consider giving it a ⭐ on [GitHub](https://github.com/strench0/awesome_scrollable_charts)!

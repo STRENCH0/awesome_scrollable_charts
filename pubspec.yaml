@@ -1,8 +1,8 @@
-name: scrollable_charts
+name: awesome_scrollable_charts
 description: Beautiful, animated, and highly customizable scrollable charts for Flutter. Features line charts and stacked area charts with smooth animations and extensive styling options.
 version: 0.1.0
-homepage: https://github.com/yourusername/scrollable_charts
-repository: https://github.com/yourusername/scrollable_charts
+homepage: https://github.com/strench0/awesome_scrollable_charts
+repository: https://github.com/strench0/awesome_scrollable_charts
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

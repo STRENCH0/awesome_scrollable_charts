@@ -27,4 +27,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Callbacks for visible range and selection changes
 - Comprehensive documentation and examples
 
-[0.1.0]: https://github.com/strench0/scrollable_charts/releases/tag/v0.1.0
+[0.1.0]: https://github.com/strench0/awesome_scrollable_charts/releases/tag/v0.1.0

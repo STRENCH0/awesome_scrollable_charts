@@ -1,5 +1,5 @@
-name: scrollable_charts_example
-description: Example app for the Scrollable Charts package
+name: awesome_scrollable_charts_example
+description: Example app for the Awesome Scrollable Charts package
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  scrollable_charts:
+  awesome_scrollable_charts:
     path: ../
   cupertino_icons: ^1.0.8
 

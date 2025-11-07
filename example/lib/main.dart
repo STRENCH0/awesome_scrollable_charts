@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scrollable_charts/scrollable_charts.dart';
+import 'package:awesome_scrollable_charts/awesome_scrollable_charts.dart';
 import 'sample_data.dart';
 
 void main() {
