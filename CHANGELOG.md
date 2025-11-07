@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-01-07
+
+### Added
+- `LabelTransformer` typedef for customizing label formatting
+- `defaultLabelTransformer` function that provides default label formatting
+- `labelTransformer` parameter to both `LineChart` and `StackedAreaChart` widgets
+- `LabelOverlapBehavior` enum with three strategies for handling overlapping line labels:
+  - `none` - No overlap handling (default, maintains backward compatibility)
+  - `adjust` - Smart collision detection that automatically adjusts label positions vertically
+  - `hide` - Hides overlapping labels, showing only non-conflicting ones
+- `overlapBehavior` parameter to `LineLabelStyle` for configuring label overlap strategy
+
+### Changed
+- **BREAKING**: `CumulativeLabelStyle` now uses `TextStyle textStyle` instead of separate `textColor`, `fontSize`, and `fontWeight` properties
+- **BREAKING**: `XAxisLabelStyle` now uses `TextStyle textStyle` instead of separate `color`, `fontSize`, and `fontWeight` properties
+- **BREAKING**: `LineLabelStyle` now uses `TextStyle textStyle` instead of separate `textColor`, `fontSize`, and `fontWeight` properties
+
+### Migration Guide
+To migrate from 0.1.0 to 0.2.0, update your style configurations:
+
+```dart
+// Before (0.1.0)
+XAxisLabelStyle(
+  color: Colors.black87,
+  fontSize: 12.0,
+  fontWeight: FontWeight.w500,
+)
+
+// After (0.2.0)
+XAxisLabelStyle(
+  textStyle: TextStyle(
+    color: Colors.black87,
+    fontSize: 12.0,
+    fontWeight: FontWeight.w500,
+  ),
+)
+```
+
 ## [0.1.0] - 2025-01-07
 
 ### Added
@@ -26,5 +64,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Multiple lines/areas per chart
   - Callbacks for visible range and selection changes
 - Comprehensive documentation and examples
-
-[0.1.0]: https://github.com/strench0/awesome_scrollable_charts/releases/tag/v0.1.0

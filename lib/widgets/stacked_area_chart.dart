@@ -73,6 +73,10 @@ class StackedAreaChart extends StatefulWidget {
   /// Style for the X-axis labels.
   final XAxisLabelStyle xAxisLabelStyle;
 
+  /// Function to transform numeric values to strings for cumulative labels.
+  /// Defaults to [defaultLabelTransformer].
+  final LabelTransformer labelTransformer;
+
   /// How to handle missing data points. Defaults to [MissingDataBehavior.zero].
   final MissingDataBehavior missingDataBehavior;
 
@@ -113,6 +117,7 @@ class StackedAreaChart extends StatefulWidget {
     this.zeroLineStyle = const ZeroLineStyle(),
     this.xAxisStyle = const XAxisStyle(),
     this.xAxisLabelStyle = const XAxisLabelStyle(),
+    this.labelTransformer = defaultLabelTransformer,
     this.missingDataBehavior = MissingDataBehavior.zero,
     this.yAxisAnimationConfig = YAxisAnimationConfig.smooth,
     this.scrollPhysicsConfig = ScrollPhysicsConfig.smooth,
@@ -237,6 +242,7 @@ class _StackedAreaChartState extends BaseScrollableChartState<StackedAreaChart> 
               zeroLineStyle: widget.zeroLineStyle,
               xAxisStyle: widget.xAxisStyle,
               xAxisLabelStyle: widget.xAxisLabelStyle,
+              labelTransformer: widget.labelTransformer,
               missingDataBehavior: widget.missingDataBehavior,
               animatedYMin: currentYMin,
               animatedYMax: currentYMax,
@@ -252,6 +258,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
   final StackedAreaChartData data;
   final double totalWidth;
   final CumulativeLabelStyle? cumulativeLabelStyle;
+  final LabelTransformer labelTransformer;
   final MissingDataBehavior missingDataBehavior;
   final double animatedYMin;
   final double animatedYMax;
@@ -269,6 +276,7 @@ class StackedAreaChartPainter extends BaseChartPainter {
     required super.zeroLineStyle,
     required super.xAxisStyle,
     required super.xAxisLabelStyle,
+    required this.labelTransformer,
     required this.missingDataBehavior,
     required this.animatedYMin,
     required this.animatedYMax,
@@ -467,12 +475,8 @@ class StackedAreaChartPainter extends BaseChartPainter {
       final y = chartArea.top + ((yRange.max - maxPositiveTop) * yScale);
 
       final textSpan = TextSpan(
-        text: netValue.toStringAsFixed(0),
-        style: TextStyle(
-          color: style.textColor,
-          fontSize: style.fontSize,
-          fontWeight: style.fontWeight,
-        ),
+        text: labelTransformer(netValue),
+        style: style.textStyle,
       );
 
       final textPainter = TextPainter(

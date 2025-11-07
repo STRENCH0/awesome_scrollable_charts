@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../models/chart_data.dart';
 import '../models/line_label_style.dart';
+import '../models/label_overlap_behavior.dart';
 import '../models/data_marker_style.dart';
 import '../models/grid_lines_style.dart';
 import '../models/scroll_physics_config.dart';
@@ -75,6 +76,10 @@ class LineChart extends StatefulWidget {
   /// Style for the X-axis labels.
   final XAxisLabelStyle xAxisLabelStyle;
 
+  /// Function to transform numeric values to strings for line labels.
+  /// Defaults to [defaultLabelTransformer].
+  final LabelTransformer labelTransformer;
+
   /// How to handle missing data points. Defaults to [MissingDataBehavior.zero].
   final MissingDataBehavior missingDataBehavior;
 
@@ -119,6 +124,7 @@ class LineChart extends StatefulWidget {
     this.zeroLineStyle = const ZeroLineStyle(),
     this.xAxisStyle = const XAxisStyle(),
     this.xAxisLabelStyle = const XAxisLabelStyle(),
+    this.labelTransformer = defaultLabelTransformer,
     this.missingDataBehavior = MissingDataBehavior.zero,
     this.yAxisAnimationConfig = YAxisAnimationConfig.smooth,
     this.scrollPhysicsConfig = ScrollPhysicsConfig.smooth,
@@ -236,6 +242,7 @@ class _LineChartState extends BaseScrollableChartState<LineChart> {
               zeroLineStyle: widget.zeroLineStyle,
               xAxisStyle: widget.xAxisStyle,
               xAxisLabelStyle: widget.xAxisLabelStyle,
+              labelTransformer: widget.labelTransformer,
               missingDataBehavior: widget.missingDataBehavior,
               animatedYMin: currentYMin,
               animatedYMax: currentYMax,
@@ -252,6 +259,7 @@ class LineChartPainter extends BaseChartPainter {
   final LineChartData data;
   final double totalWidth;
   final LineLabelStyle? lineLabelStyle;
+  final LabelTransformer labelTransformer;
   final MissingDataBehavior missingDataBehavior;
   final double animatedYMin;
   final double animatedYMax;
@@ -270,6 +278,7 @@ class LineChartPainter extends BaseChartPainter {
     required super.zeroLineStyle,
     required super.xAxisStyle,
     required super.xAxisLabelStyle,
+    required this.labelTransformer,
     required this.missingDataBehavior,
     required this.animatedYMin,
     required this.animatedYMax,
@@ -433,6 +442,22 @@ class LineChartPainter extends BaseChartPainter {
     final yScale = chartArea.height / (yRange.max - yRange.min);
     final style = lineLabelStyle!;
 
+    if (style.overlapBehavior == LabelOverlapBehavior.none) {
+      _drawLineLabelsWithoutCollisionDetection(canvas, chartArea, itemWidth, lineData, yRange, yScale, style);
+    } else {
+      _drawLineLabelsWithCollisionDetection(canvas, chartArea, itemWidth, lineData, yRange, yScale, style);
+    }
+  }
+
+  void _drawLineLabelsWithoutCollisionDetection(
+    Canvas canvas,
+    Rect chartArea,
+    double itemWidth,
+    List<List<double>> lineData,
+    ({double min, double max}) yRange,
+    double yScale,
+    LineLabelStyle style,
+  ) {
     for (int labelIndex = 0; labelIndex < data.labels.length; labelIndex++) {
       for (int lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
         final line = data.lines[lineIndex];
@@ -441,15 +466,34 @@ class LineChartPainter extends BaseChartPainter {
         final x = chartArea.left + (labelIndex * itemWidth) + (itemWidth / 2);
         final y = chartArea.top + ((yRange.max - value) * yScale);
 
-        final textColor = style.useLineColorForText ? line.color : (style.textColor ?? Colors.black87);
-        final containerColor = style.containerColor ?? line.color.withValues(alpha: style.containerAlpha);
+        _drawSingleLabel(canvas, x, y, value, line, style);
+      }
+    }
+  }
+
+  void _drawLineLabelsWithCollisionDetection(
+    Canvas canvas,
+    Rect chartArea,
+    double itemWidth,
+    List<List<double>> lineData,
+    ({double min, double max}) yRange,
+    double yScale,
+    LineLabelStyle style,
+  ) {
+    final labelInfos = <_LabelInfo>[];
+
+    for (int labelIndex = 0; labelIndex < data.labels.length; labelIndex++) {
+      for (int lineIndex = 0; lineIndex < data.lines.length; lineIndex++) {
+        final line = data.lines[lineIndex];
+        final value = lineData[labelIndex][lineIndex];
+
+        final x = chartArea.left + (labelIndex * itemWidth) + (itemWidth / 2);
+        final y = chartArea.top + ((yRange.max - value) * yScale);
 
         final textSpan = TextSpan(
-          text: value.toStringAsFixed(0),
-          style: TextStyle(
-            color: textColor,
-            fontSize: style.fontSize,
-            fontWeight: style.fontWeight,
+          text: labelTransformer(value),
+          style: style.textStyle.copyWith(
+            color: style.useLineColorForText ? line.color : style.textStyle.color,
           ),
         );
 
@@ -457,38 +501,185 @@ class LineChartPainter extends BaseChartPainter {
           text: textSpan,
           textDirection: TextDirection.ltr,
         );
-
         textPainter.layout();
 
         final containerWidth = textPainter.width + style.padding.horizontal;
         final containerHeight = textPainter.height + style.padding.vertical;
 
-        final yOffset = style.offsetY;
-
-        final containerRect = RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset(x + style.offsetX, y + yOffset),
-            width: containerWidth,
-            height: containerHeight,
-          ),
-          Radius.circular(style.cornerRadius),
-        );
-
-        final containerPaint = Paint()
-          ..color = containerColor
-          ..style = PaintingStyle.fill;
-
-        canvas.drawRRect(containerRect, containerPaint);
-
-        textPainter.paint(
-          canvas,
-          Offset(
-            x + style.offsetX - textPainter.width / 2,
-            y + yOffset - textPainter.height / 2,
-          ),
-        );
+        labelInfos.add(_LabelInfo(
+          x: x,
+          y: y,
+          value: value,
+          line: line,
+          textPainter: textPainter,
+          containerWidth: containerWidth,
+          containerHeight: containerHeight,
+          labelIndex: labelIndex,
+          lineIndex: lineIndex,
+        ));
       }
     }
+
+    if (style.overlapBehavior == LabelOverlapBehavior.adjust) {
+      _adjustOverlappingLabels(labelInfos, style);
+      for (final info in labelInfos) {
+        _drawSingleLabelWithInfo(canvas, info, style);
+      }
+    } else if (style.overlapBehavior == LabelOverlapBehavior.hide) {
+      final drawnRects = <Rect>[];
+      for (final info in labelInfos) {
+        final labelRect = _getLabelRect(info, style);
+
+        final overlaps = drawnRects.any((rect) => _rectsOverlap(rect, labelRect));
+
+        if (!overlaps) {
+          _drawSingleLabelWithInfo(canvas, info, style);
+          drawnRects.add(labelRect);
+        }
+      }
+    }
+  }
+
+  void _adjustOverlappingLabels(List<_LabelInfo> labelInfos, LineLabelStyle style) {
+    const minSpacing = 4.0;
+    const maxIterations = 10;
+
+    for (int iteration = 0; iteration < maxIterations; iteration++) {
+      bool hadOverlap = false;
+
+      for (int i = 0; i < labelInfos.length; i++) {
+        for (int j = i + 1; j < labelInfos.length; j++) {
+          final rect1 = _getLabelRect(labelInfos[i], style);
+          final rect2 = _getLabelRect(labelInfos[j], style);
+
+          if (_rectsOverlap(rect1, rect2)) {
+            hadOverlap = true;
+
+            final overlapAmount = rect1.bottom - rect2.top;
+            if (overlapAmount > 0) {
+              final adjustment = (overlapAmount / 2) + minSpacing;
+              labelInfos[i].adjustedOffsetY -= adjustment;
+              labelInfos[j].adjustedOffsetY += adjustment;
+            }
+          }
+        }
+      }
+
+      if (!hadOverlap) break;
+    }
+  }
+
+  bool _rectsOverlap(Rect rect1, Rect rect2) {
+    return !(rect1.right < rect2.left ||
+             rect1.left > rect2.right ||
+             rect1.bottom < rect2.top ||
+             rect1.top > rect2.bottom);
+  }
+
+  Rect _getLabelRect(_LabelInfo info, LineLabelStyle style) {
+    final yOffset = style.offsetY + info.adjustedOffsetY;
+    return Rect.fromCenter(
+      center: Offset(info.x + style.offsetX, info.y + yOffset),
+      width: info.containerWidth,
+      height: info.containerHeight,
+    );
+  }
+
+  void _drawSingleLabel(
+    Canvas canvas,
+    double x,
+    double y,
+    double value,
+    LineData line,
+    LineLabelStyle style,
+  ) {
+    final textColor = style.useLineColorForText ? line.color : style.textStyle.color;
+    final containerColor = style.containerColor ?? line.color.withValues(alpha: style.containerAlpha);
+
+    final textSpan = TextSpan(
+      text: labelTransformer(value),
+      style: style.textStyle.copyWith(color: textColor),
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+
+    final containerWidth = textPainter.width + style.padding.horizontal;
+    final containerHeight = textPainter.height + style.padding.vertical;
+
+    final yOffset = style.offsetY;
+
+    final containerRect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(x + style.offsetX, y + yOffset),
+        width: containerWidth,
+        height: containerHeight,
+      ),
+      Radius.circular(style.cornerRadius),
+    );
+
+    final containerPaint = Paint()
+      ..color = containerColor
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRRect(containerRect, containerPaint);
+
+    textPainter.paint(
+      canvas,
+      Offset(
+        x + style.offsetX - textPainter.width / 2,
+        y + yOffset - textPainter.height / 2,
+      ),
+    );
+  }
+
+  void _drawSingleLabelWithInfo(
+    Canvas canvas,
+    _LabelInfo info,
+    LineLabelStyle style,
+  ) {
+    final textColor = style.useLineColorForText ? info.line.color : style.textStyle.color;
+    final containerColor = style.containerColor ?? info.line.color.withValues(alpha: style.containerAlpha);
+
+    final yOffset = style.offsetY + info.adjustedOffsetY;
+
+    final containerRect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(info.x + style.offsetX, info.y + yOffset),
+        width: info.containerWidth,
+        height: info.containerHeight,
+      ),
+      Radius.circular(style.cornerRadius),
+    );
+
+    final containerPaint = Paint()
+      ..color = containerColor
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRRect(containerRect, containerPaint);
+
+    final textSpan = TextSpan(
+      text: labelTransformer(info.value),
+      style: style.textStyle.copyWith(color: textColor),
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+
+    textPainter.paint(
+      canvas,
+      Offset(
+        info.x + style.offsetX - textPainter.width / 2,
+        info.y + yOffset - textPainter.height / 2,
+      ),
+    );
   }
 
   void _drawDataMarkers(
@@ -568,4 +759,29 @@ class LineChartPainter extends BaseChartPainter {
         oldDelegate.animatedYMax != animatedYMax ||
         oldDelegate.smooth != smooth;
   }
+}
+
+class _LabelInfo {
+  final double x;
+  final double y;
+  final double value;
+  final LineData line;
+  final TextPainter textPainter;
+  final double containerWidth;
+  final double containerHeight;
+  final int labelIndex;
+  final int lineIndex;
+  double adjustedOffsetY = 0.0;
+
+  _LabelInfo({
+    required this.x,
+    required this.y,
+    required this.value,
+    required this.line,
+    required this.textPainter,
+    required this.containerWidth,
+    required this.containerHeight,
+    required this.labelIndex,
+    required this.lineIndex,
+  });
 }

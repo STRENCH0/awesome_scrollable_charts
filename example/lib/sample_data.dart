@@ -145,7 +145,7 @@ LineChartData getSampleLineChartData() {
         LineDataPoint(labelIndex: 3, value: 3800),
         LineDataPoint(labelIndex: 4, value: 4000),
         LineDataPoint(labelIndex: 5, value: 4300),
-        LineDataPoint(labelIndex: 6, value: 4500),
+        LineDataPoint(labelIndex: 6, value: 6000),
         LineDataPoint(labelIndex: 7, value: 4800),
         LineDataPoint(labelIndex: 9, value: 5300),
         LineDataPoint(labelIndex: 10, value: 5500),

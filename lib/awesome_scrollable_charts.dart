@@ -23,5 +23,6 @@ export 'models/x_axis_style.dart';
 export 'models/zero_line_style.dart';
 
 // Models - Configuration
+export 'models/label_overlap_behavior.dart';
 export 'models/scroll_physics_config.dart';
 export 'models/y_axis_animation_config.dart';

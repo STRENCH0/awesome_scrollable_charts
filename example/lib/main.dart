@@ -55,6 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   scrollPhysicsConfig: ScrollPhysicsConfig.fast,
                   onVisibleRangeChanged: (indices) => print('Visible: $indices'),
                   onSelectedChanged: (index) => print('Selected: $index'),
+                  labelTransformer: (value) {
+                    return '$value \$';
+                  },
                   gridLinesStyle: GridLinesStyle(
                     isDashed: false
                   ),
@@ -62,8 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   missingDataBehavior: MissingDataBehavior.previousValue,
                   cumulativeLabelStyle: CumulativeLabelStyle(
                     cornerRadius: 8.0,
-                    // offsetX: -20,
-                    offsetY: -18
+                    offsetY: -18,
                   ),
                   selectedPointerStyle: SelectedPointerStyle(
                     color: Colors.black,
@@ -85,9 +87,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   xAxisLabelStyle: XAxisLabelStyle(
                     enabled: true,
-                    color: Colors.black87,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w500,
+                    textStyle: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w500,
+                    ),
                     distanceFromAxis: 10.0,
                   ),
                 ),
@@ -121,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   missingDataBehavior: MissingDataBehavior.previousValue,
                   lineLabelStyle: LineLabelStyle(
+                    overlapBehavior: LabelOverlapBehavior.adjust,
                     enabled: true,
                     useLineColorForText: false,
                     containerAlpha: 0.7,
@@ -144,9 +149,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   xAxisLabelStyle: XAxisLabelStyle(
                     enabled: true,
-                    color: Colors.black87,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w500,
+                    textStyle: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w500,
+                    ),
                     distanceFromAxis: 10.0,
                   ),
                 ),

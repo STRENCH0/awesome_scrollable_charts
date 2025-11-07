@@ -227,11 +227,7 @@ abstract class BaseChartPainter extends CustomPainter {
 
       final textSpan = TextSpan(
         text: label.label,
-        style: TextStyle(
-          color: xAxisLabelStyle.color,
-          fontSize: xAxisLabelStyle.fontSize,
-          fontWeight: xAxisLabelStyle.fontWeight,
-        ),
+        style: xAxisLabelStyle.textStyle,
       );
 
       final textPainter = TextPainter(

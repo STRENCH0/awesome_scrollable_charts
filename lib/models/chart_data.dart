@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+/// Function that transforms a numeric value to a string for display in labels
+typedef LabelTransformer = String Function(double value);
+
+/// Default label transformer that formats values as integers
+String defaultLabelTransformer(double value) => value.toStringAsFixed(0);
+
 /// Behavior for handling missing data points
 enum MissingDataBehavior {
   /// Use 0 for missing data points
