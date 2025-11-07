@@ -15,21 +15,92 @@ import 'base/base_scrollable_chart_state.dart';
 import 'base/base_chart_painter.dart';
 import 'month_snap_scroll_physics.dart';
 
+/// A scrollable stacked area chart widget for displaying cumulative data.
+///
+/// [StackedAreaChart] visualizes multiple data series as stacked filled areas,
+/// showing how individual components contribute to a total over time. It features
+/// smooth scrolling, animations, and extensive styling options.
+///
+/// Example:
+/// ```dart
+/// StackedAreaChart(
+///   data: StackedAreaChartData(
+///     labels: [
+///       ChartLabel(label: 'Q1'),
+///       ChartLabel(label: 'Q2'),
+///       ChartLabel(label: 'Q3'),
+///     ],
+///     areas: [
+///       ChartArea(
+///         label: 'Product A',
+///         color: Colors.blue.withOpacity(0.7),
+///         points: [
+///           DataPoint(labelIndex: 0, value: 500),
+///           DataPoint(labelIndex: 1, value: 700),
+///           DataPoint(labelIndex: 2, value: 600),
+///         ],
+///       ),
+///     ],
+///   ),
+///   visibleLabels: 3,
+/// )
+/// ```
 class StackedAreaChart extends StatefulWidget {
+  /// The data to display in the chart.
   final StackedAreaChartData data;
+
+  /// Number of data points visible at once. Defaults to 3.
   final int visibleLabels;
+
+  /// Style for the selected pointer vertical line.
   final SelectedPointerStyle? selectedPointerStyle;
+
+  /// Style for the vertical grid lines.
   final GridLinesStyle? gridLinesStyle;
+
+  /// Style for the cumulative value labels at the top of each stack.
   final CumulativeLabelStyle? cumulativeLabelStyle;
+
+  /// Style for the data point markers.
   final DataMarkerStyle? dataMarkerStyle;
+
+  /// Style for the zero line (horizontal line at y=0).
   final ZeroLineStyle zeroLineStyle;
+
+  /// Style for the X-axis line.
   final XAxisStyle xAxisStyle;
+
+  /// Style for the X-axis labels.
   final XAxisLabelStyle xAxisLabelStyle;
+
+  /// How to handle missing data points. Defaults to [MissingDataBehavior.zero].
   final MissingDataBehavior missingDataBehavior;
+
+  /// Configuration for Y-axis range animations.
   final YAxisAnimationConfig yAxisAnimationConfig;
+
+  /// Configuration for scroll snap physics.
   final ScrollPhysicsConfig scrollPhysicsConfig;
+
+  /// Callback when the visible range of data points changes.
   final OnVisibleRangeChanged? onVisibleRangeChanged;
+
+  /// Callback when the selected data point changes.
   final OnSelectedChanged? onSelectedChanged;
+
+  /// Initial index to display when the chart loads.
+  ///
+  /// If null, the chart will start at the last data point (most recent).
+  /// The value will be clamped to valid indices (0 to labels.length - 1).
+  ///
+  /// Example:
+  /// ```dart
+  /// StackedAreaChart(
+  ///   data: yourData,
+  ///   initialIndex: 0, // Start at the first data point
+  /// )
+  /// ```
+  final int? initialIndex;
 
   const StackedAreaChart({
     super.key,
@@ -47,6 +118,7 @@ class StackedAreaChart extends StatefulWidget {
     this.scrollPhysicsConfig = ScrollPhysicsConfig.smooth,
     this.onVisibleRangeChanged,
     this.onSelectedChanged,
+    this.initialIndex,
   });
 
   @override
@@ -68,6 +140,9 @@ class _StackedAreaChartState extends BaseScrollableChartState<StackedAreaChart> 
 
   @override
   OnSelectedChanged? get onSelectedChanged => widget.onSelectedChanged;
+
+  @override
+  int? get initialIndex => widget.initialIndex;
 
   @override
   ({double min, double max}) calculateTargetYRange(int firstVisibleIndex, int lastVisibleIndex) {

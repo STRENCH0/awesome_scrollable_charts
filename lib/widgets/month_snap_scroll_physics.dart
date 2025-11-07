@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:net_worth_widget/models/scroll_physics_config.dart';
+import '../models/scroll_physics_config.dart';
 
 class MonthSnapScrollPhysics extends ScrollPhysics {
   final double itemWidth;

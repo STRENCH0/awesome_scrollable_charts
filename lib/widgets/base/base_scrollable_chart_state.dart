@@ -27,6 +27,7 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
 
   int get labelsLength;
   int get visibleLabels;
+  int? get initialIndex;
   YAxisAnimationConfig get yAxisAnimationConfig;
   OnVisibleRangeChanged? get onVisibleRangeChanged;
   OnSelectedChanged? get onSelectedChanged;
@@ -67,9 +68,10 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final screenWidth = MediaQuery.of(context).size.width;
-        final itemWidth = screenWidth / visibleLabels;
-        final initialOffset = (visibleLabels - 1) * itemWidth;
+        // Calculate initial offset based on initialIndex or default to last item
+        final targetIndex = initialIndex?.clamp(0, labelsLength - 1) ?? (labelsLength - 1);
+        final initialOffset = calculateScrollOffsetForIndex(targetIndex);
+
         scrollController.jumpTo(initialOffset);
         updateYRange();
       }
@@ -95,6 +97,23 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
     scrollDebounceTimer = Timer(const Duration(milliseconds: 30), () {
       updateYRange();
     });
+  }
+
+  double _calculateCenterOffset() {
+    if (visibleLabels % 2 == 0) {
+      return (visibleLabels - 2) / 2.0;
+    } else {
+      return (visibleLabels - 1) / 2.0;
+    }
+  }
+
+  double calculateScrollOffsetForIndex(int targetIndex) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final itemWidth = screenWidth / visibleLabels;
+    final paddingWidth = (visibleLabels - 1) * itemWidth;
+    final centerOffset = _calculateCenterOffset();
+
+    return paddingWidth + ((targetIndex - centerOffset) * itemWidth);
   }
 
   void updateYRange() {
@@ -187,13 +206,7 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
     final screenWidth = MediaQuery.of(context).size.width;
     final itemWidth = screenWidth / visibleLabels;
     final paddingWidth = (visibleLabels - 1) * itemWidth;
-
-    final double centerOffset;
-    if (visibleLabels % 2 == 0) {
-      centerOffset = (visibleLabels - 2) / 2.0;
-    } else {
-      centerOffset = (visibleLabels - 1) / 2.0;
-    }
+    final centerOffset = _calculateCenterOffset();
 
     return ((scrollOffset - paddingWidth) / itemWidth + centerOffset)
         .round()

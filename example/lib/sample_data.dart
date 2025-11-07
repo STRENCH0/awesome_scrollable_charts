@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/chart_data.dart';
+import 'package:scrollable_charts/models/chart_data.dart';
 
 StackedAreaChartData getSampleChartData() {
   final labels = [

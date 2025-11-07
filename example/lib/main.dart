@@ -1,18 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:net_worth_widget/models/chart_data.dart';
-import 'package:net_worth_widget/models/data_marker_style.dart';
-import 'package:net_worth_widget/models/grid_lines_style.dart';
-import 'package:net_worth_widget/models/x_axis_label_style.dart';
-import 'package:net_worth_widget/models/x_axis_style.dart';
-import 'package:net_worth_widget/models/y_axis_animation_config.dart';
-import 'package:net_worth_widget/models/zero_line_style.dart';
-import 'models/cumulative_label_style.dart';
-import 'models/line_label_style.dart';
-import 'models/scroll_physics_config.dart';
-import 'models/selected_pointer_style.dart';
-import 'widgets/stacked_area_chart.dart';
-import 'widgets/line_chart.dart';
-import 'utils/sample_data.dart';
+import 'package:scrollable_charts/scrollable_charts.dart';
+import 'sample_data.dart';
 
 void main() {
   runApp(const MyApp());
@@ -52,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Динамика активов', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+              Text('Stacked area chart', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               SizedBox(
                 height: 350,
@@ -60,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: StackedAreaChart(
                   data: getSampleChartData(),
                   visibleLabels: 3,
+                  // initialIndex: 0, // Start at the first data point
                   yAxisAnimationConfig: YAxisAnimationConfig(
                     curve: Curves.linear,
                   ),
@@ -104,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 32),
-              Text('Линейный график', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+              Text('Linear chart', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               SizedBox(
                 height: 350,
@@ -112,6 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: LineChart(
                   data: getSampleLineChartData(),
                   visibleLabels: 3,
+                  initialIndex: 0, // Start at the first data point
                   smooth: true,
                   yAxisAnimationConfig: YAxisAnimationConfig(
                     curve: Curves.linear,

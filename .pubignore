@@ -1,0 +1,20 @@
+# Exclude platform-specific directories from published package
+# These are only needed in the example app
+example/android/
+example/.gitignore
+
+# Exclude android directory if still present (moved to example)
+android/
+
+# Exclude build artifacts
+build/
+
+# Exclude IDE and development files
+.idea/
+*.iml
+.vscode/
+.claude/
+
+# Exclude git files
+.git/
+.gitignore

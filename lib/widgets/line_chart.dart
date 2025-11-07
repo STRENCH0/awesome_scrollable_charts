@@ -15,27 +15,103 @@ import 'base/base_scrollable_chart_state.dart';
 import 'base/base_chart_painter.dart';
 import 'month_snap_scroll_physics.dart';
 
+/// A scrollable line chart widget with smooth animations and extensive customization options.
+///
+/// [LineChart] displays one or more data series as lines on a chart with horizontal
+/// scrolling capability. It supports smooth animations, custom styling, and various
+/// data visualization features.
+///
+/// Example:
+/// ```dart
+/// LineChart(
+///   data: LineChartData(
+///     labels: [
+///       ChartLabel(label: 'Jan'),
+///       ChartLabel(label: 'Feb'),
+///       ChartLabel(label: 'Mar'),
+///     ],
+///     lines: [
+///       ChartLine(
+///         label: 'Revenue',
+///         color: Colors.blue,
+///         strokeWidth: 2.0,
+///         points: [
+///           DataPoint(labelIndex: 0, value: 1000),
+///           DataPoint(labelIndex: 1, value: 1500),
+///           DataPoint(labelIndex: 2, value: 1200),
+///         ],
+///       ),
+///     ],
+///   ),
+///   visibleLabels: 3,
+///   smooth: true,
+/// )
+/// ```
 class LineChart extends StatefulWidget {
+  /// The data to display in the chart.
   final LineChartData data;
+
+  /// Number of data points visible at once. Defaults to 3.
   final int visibleLabels;
+
+  /// Style for the selected pointer vertical line.
   final SelectedPointerStyle? selectedPointerStyle;
+
+  /// Style for the vertical grid lines.
   final GridLinesStyle? gridLinesStyle;
+
+  /// Style for the data value labels displayed on the chart.
   final LineLabelStyle? lineLabelStyle;
+
+  /// Style for the data point markers.
   final DataMarkerStyle? dataMarkerStyle;
+
+  /// Style for the zero line (horizontal line at y=0).
   final ZeroLineStyle zeroLineStyle;
+
+  /// Style for the X-axis line.
   final XAxisStyle xAxisStyle;
+
+  /// Style for the X-axis labels.
   final XAxisLabelStyle xAxisLabelStyle;
+
+  /// How to handle missing data points. Defaults to [MissingDataBehavior.zero].
   final MissingDataBehavior missingDataBehavior;
+
+  /// Configuration for Y-axis range animations.
   final YAxisAnimationConfig yAxisAnimationConfig;
+
+  /// Configuration for scroll snap physics.
   final ScrollPhysicsConfig scrollPhysicsConfig;
+
+  /// Callback when the visible range of data points changes.
   final OnVisibleRangeChanged? onVisibleRangeChanged;
+
+  /// Callback when the selected data point changes.
   final OnSelectedChanged? onSelectedChanged;
+
+  /// Whether to draw smooth curves between points. Defaults to false.
   final bool smooth;
+
+  /// Initial index to display when the chart loads.
+  ///
+  /// If null, the chart will start at the last data point (most recent).
+  /// The value will be clamped to valid indices (0 to labels.length - 1).
+  ///
+  /// Example:
+  /// ```dart
+  /// LineChart(
+  ///   data: yourData,
+  ///   initialIndex: 0, // Start at the first data point
+  /// )
+  /// ```
+  final int? initialIndex;
 
   const LineChart({
     super.key,
     required this.data,
     this.visibleLabels = 3,
+    this.initialIndex,
     this.selectedPointerStyle,
     this.gridLinesStyle,
     this.lineLabelStyle,
@@ -61,6 +137,9 @@ class _LineChartState extends BaseScrollableChartState<LineChart> {
 
   @override
   int get visibleLabels => widget.visibleLabels;
+
+  @override
+  int? get initialIndex => widget.initialIndex;
 
   @override
   YAxisAnimationConfig get yAxisAnimationConfig => widget.yAxisAnimationConfig;
