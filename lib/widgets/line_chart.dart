@@ -204,8 +204,9 @@ class _LineChartState extends BaseScrollableChartState<LineChart> {
     final paddingWidth = (widget.visibleLabels - 1) * itemWidth;
     final totalWidth = (totalLabels * itemWidth) + (2 * paddingWidth);
 
-    final minScrollBound = max(0.0, paddingWidth - itemWidth);
-    final maxScrollBound = paddingWidth + ((totalLabels - 2) * itemWidth);
+    final centerOffset = calculateCenterOffset();
+    final minScrollBound = max(0.0, paddingWidth - (centerOffset * itemWidth));
+    final maxScrollBound = paddingWidth + ((totalLabels - 1 - centerOffset) * itemWidth);
 
     return LayoutBuilder(
       builder: (context, constraints) {

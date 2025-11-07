@@ -323,4 +323,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-If you find this package useful, please consider giving it a ⭐ on [GitHub](https://github.com/yourusername/scrollable_charts)!
+If you find this package useful, please consider giving it a ⭐ on [GitHub](https://github.com/strench0/scrollable_charts)!

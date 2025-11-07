@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: StackedAreaChart(
                   data: getSampleChartData(),
                   visibleLabels: 3,
-                  // initialIndex: 0, // Start at the first data point
+                  initialIndex: 11, // Start at the first data point
                   yAxisAnimationConfig: YAxisAnimationConfig(
                     curve: Curves.linear,
                   ),

@@ -99,7 +99,7 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
     });
   }
 
-  double _calculateCenterOffset() {
+  double calculateCenterOffset() {
     if (visibleLabels % 2 == 0) {
       return (visibleLabels - 2) / 2.0;
     } else {
@@ -111,7 +111,7 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
     final screenWidth = MediaQuery.of(context).size.width;
     final itemWidth = screenWidth / visibleLabels;
     final paddingWidth = (visibleLabels - 1) * itemWidth;
-    final centerOffset = _calculateCenterOffset();
+    final centerOffset = calculateCenterOffset();
 
     return paddingWidth + ((targetIndex - centerOffset) * itemWidth);
   }
@@ -206,7 +206,7 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
     final screenWidth = MediaQuery.of(context).size.width;
     final itemWidth = screenWidth / visibleLabels;
     final paddingWidth = (visibleLabels - 1) * itemWidth;
-    final centerOffset = _calculateCenterOffset();
+    final centerOffset = calculateCenterOffset();
 
     return ((scrollOffset - paddingWidth) / itemWidth + centerOffset)
         .round()
