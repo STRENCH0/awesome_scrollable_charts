@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   yAxisAnimationConfig: YAxisAnimationConfig(
                     curve: Curves.linear,
                   ),
-                  scrollPhysicsConfig: ScrollPhysicsConfig.fast,
+                  scrollPhysicsConfig: ScrollPhysicsConfig.smooth,
                   onVisibleRangeChanged: (indices) => print('Visible: $indices'),
                   onSelectedChanged: (index) => print('Selected: $index'),
                   labelTransformer: (value) {

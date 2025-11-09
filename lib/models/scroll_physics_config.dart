@@ -20,7 +20,7 @@ class ScrollPhysicsConfig {
   static const ScrollPhysicsConfig smooth = ScrollPhysicsConfig(
     mass: 1.0,
     stiffness: 180.0,
-    damping: 20.0,
+    damping: 30.0,
   );
 
   static const ScrollPhysicsConfig bouncy = ScrollPhysicsConfig(
