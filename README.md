@@ -61,23 +61,23 @@ class MyLineChart extends StatelessWidget {
     return LineChart(
       data: LineChartData(
         labels: [
-          ChartLabel(label: 'Jan'),
-          ChartLabel(label: 'Feb'),
-          ChartLabel(label: 'Mar'),
-          ChartLabel(label: 'Apr'),
-          ChartLabel(label: 'May'),
+          ChartLabel(label: 'Jan', index: 0),
+          ChartLabel(label: 'Feb', index: 1),
+          ChartLabel(label: 'Mar', index: 2),
+          ChartLabel(label: 'Apr', index: 3),
+          ChartLabel(label: 'May', index: 4),
         ],
         lines: [
-          ChartLine(
+          LineData(
             label: 'Revenue',
             color: Colors.blue,
             strokeWidth: 2.0,
             points: [
-              DataPoint(labelIndex: 0, value: 1000),
-              DataPoint(labelIndex: 1, value: 1500),
-              DataPoint(labelIndex: 2, value: 1200),
-              DataPoint(labelIndex: 3, value: 1800),
-              DataPoint(labelIndex: 4, value: 2200),
+              LineDataPoint(labelIndex: 0, value: 1000),
+              LineDataPoint(labelIndex: 1, value: 1500),
+              LineDataPoint(labelIndex: 2, value: 1200),
+              LineDataPoint(labelIndex: 3, value: 1800),
+              LineDataPoint(labelIndex: 4, value: 2200),
             ],
           ),
         ],
@@ -110,30 +110,30 @@ class MyStackedAreaChart extends StatelessWidget {
     return StackedAreaChart(
       data: StackedAreaChartData(
         labels: [
-          ChartLabel(label: 'Q1'),
-          ChartLabel(label: 'Q2'),
-          ChartLabel(label: 'Q3'),
-          ChartLabel(label: 'Q4'),
+          ChartLabel(label: 'Q1', index: 0),
+          ChartLabel(label: 'Q2', index: 1),
+          ChartLabel(label: 'Q3', index: 2),
+          ChartLabel(label: 'Q4', index: 3),
         ],
         areas: [
-          ChartArea(
+          AreaData(
             label: 'Product A',
             color: Colors.blue.withOpacity(0.7),
             points: [
-              DataPoint(labelIndex: 0, value: 500),
-              DataPoint(labelIndex: 1, value: 700),
-              DataPoint(labelIndex: 2, value: 600),
-              DataPoint(labelIndex: 3, value: 900),
+              AreaDataPoint(labelIndex: 0, value: 500),
+              AreaDataPoint(labelIndex: 1, value: 700),
+              AreaDataPoint(labelIndex: 2, value: 600),
+              AreaDataPoint(labelIndex: 3, value: 900),
             ],
           ),
-          ChartArea(
+          AreaData(
             label: 'Product B',
             color: Colors.green.withOpacity(0.7),
             points: [
-              DataPoint(labelIndex: 0, value: 300),
-              DataPoint(labelIndex: 1, value: 400),
-              DataPoint(labelIndex: 2, value: 500),
-              DataPoint(labelIndex: 3, value: 450),
+              AreaDataPoint(labelIndex: 0, value: 300),
+              AreaDataPoint(labelIndex: 1, value: 400),
+              AreaDataPoint(labelIndex: 2, value: 500),
+              AreaDataPoint(labelIndex: 3, value: 450),
             ],
           ),
         ],
