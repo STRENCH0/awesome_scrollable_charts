@@ -24,6 +24,7 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
   int lastSelectedIndex = -1;
 
   Timer? scrollDebounceTimer;
+  double? _widgetWidth;
 
   int get labelsLength;
   int get visibleLabels;
@@ -33,6 +34,10 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
   OnSelectedChanged? get onSelectedChanged;
 
   ({double min, double max}) calculateTargetYRange(int firstVisibleIndex, int lastVisibleIndex);
+
+  void updateWidgetWidth(double width) {
+    _widgetWidth = width;
+  }
 
   @override
   void initState() {
@@ -108,8 +113,8 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
   }
 
   double calculateScrollOffsetForIndex(int targetIndex) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final itemWidth = screenWidth / visibleLabels;
+    final width = _widgetWidth ?? MediaQuery.of(context).size.width;
+    final itemWidth = width / visibleLabels;
     final paddingWidth = (visibleLabels - 1) * itemWidth;
     final centerOffset = calculateCenterOffset();
 
@@ -117,8 +122,8 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
   }
 
   void updateYRange() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final itemWidth = screenWidth / visibleLabels;
+    final width = _widgetWidth ?? MediaQuery.of(context).size.width;
+    final itemWidth = width / visibleLabels;
     final paddingWidth = (visibleLabels - 1) * itemWidth;
 
     final rawFirstIndex = ((scrollOffset - paddingWidth) / itemWidth).floor();
@@ -203,8 +208,8 @@ abstract class BaseScrollableChartState<T extends StatefulWidget> extends State<
   }
 
   int calculateSelectedIndex() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final itemWidth = screenWidth / visibleLabels;
+    final width = _widgetWidth ?? MediaQuery.of(context).size.width;
+    final itemWidth = width / visibleLabels;
     final paddingWidth = (visibleLabels - 1) * itemWidth;
     final centerOffset = calculateCenterOffset();
 

@@ -204,19 +204,21 @@ class _LineChartState extends BaseScrollableChartState<LineChart> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final totalLabels = widget.data.labels.length;
-    final itemWidth = screenWidth / widget.visibleLabels;
-    final paddingWidth = (widget.visibleLabels - 1) * itemWidth;
-    final totalWidth = (totalLabels * itemWidth) + (2 * paddingWidth);
-
-    final centerOffset = calculateCenterOffset();
-    final minScrollBound = max(0.0, paddingWidth - (centerOffset * itemWidth));
-    final maxScrollBound = paddingWidth + ((totalLabels - 1 - centerOffset) * itemWidth);
-
     return LayoutBuilder(
       builder: (context, constraints) {
+        final widgetWidth = constraints.maxWidth;
         final height = constraints.maxHeight;
+
+        updateWidgetWidth(widgetWidth);
+
+        final totalLabels = widget.data.labels.length;
+        final itemWidth = widgetWidth / widget.visibleLabels;
+        final paddingWidth = (widget.visibleLabels - 1) * itemWidth;
+        final totalWidth = (totalLabels * itemWidth) + (2 * paddingWidth);
+
+        final centerOffset = calculateCenterOffset();
+        final minScrollBound = max(0.0, paddingWidth - (centerOffset * itemWidth));
+        final maxScrollBound = paddingWidth + ((totalLabels - 1 - centerOffset) * itemWidth);
 
         return SingleChildScrollView(
           controller: scrollController,
