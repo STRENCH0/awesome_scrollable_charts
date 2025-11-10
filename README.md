@@ -2,7 +2,7 @@
 
 Beautiful, animated, and highly customizable scrollable charts for Flutter. Create stunning line charts and stacked area charts with smooth scrolling, animations, and extensive styling options.
 
-<img src="https://raw.githubusercontent.com/strench0/awesome_scrollable_charts/main/example/images/example.gif" alt="Example" />
+<img src="https://raw.githubusercontent.com/strench0/awesome_scrollable_charts/main/example/images/example.gif" alt="Example" width="400" />
 
 ## Features
 
